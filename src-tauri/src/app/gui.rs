@@ -70,6 +70,27 @@ struct PlayerDBPlayer {
 }
 
 #[tauri::command]
+async fn close_splashscreen(window: Window) {
+    // Hide splashscreen
+    window.get_window("splashscreen").expect("no window labeled 'splashscreen' found").hide().unwrap();
+    // Show main window
+    window.get_window("main").expect("no window labeled 'main' found").show().unwrap();
+}
+
+#[tauri::command]
+async fn quit(window: Window) {
+    // Close splashscreen
+    window.get_window("splashscreen").expect("no window labeled 'splashscreen' found").close().unwrap();
+    // Close main window
+    window.get_window("main").expect("no window labeled 'main' found").close().unwrap();
+}
+
+#[tauri::command]
+async fn has_internet_connection() -> bool {
+    reqwest::get("https://www.google.com").await.is_ok()
+}
+
+#[tauri::command]
 async fn check_online_status() -> Result<bool, String> {
     ApiEndpoints::norisk_api_status().await.map_err(|e| format!("unable to check online status: {:?}", e))
 }
@@ -1558,7 +1579,10 @@ pub fn gui_main() {
     tauri::Builder::default()
         .on_window_event(move |event| match event.event() {
             WindowEvent::Destroyed => {
-                info!("Window destroyed, quitting application");
+                info!("Window '{}' destroyed", &event.window().label());
+                if event.window().label() == "main" {
+                    std::process::exit(0);
+                }
             }
             _ => {}
         })
@@ -1570,6 +1594,9 @@ pub fn gui_main() {
             runner_instance: Arc::new(Mutex::new(None)),
         })
         .invoke_handler(tauri::generate_handler![
+            close_splashscreen,
+            quit,
+            has_internet_connection,
             open_url,
             check_online_status,
             get_options,

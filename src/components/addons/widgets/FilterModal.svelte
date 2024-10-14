@@ -69,7 +69,7 @@
       <hr>
       <div class="settings-wrapper">
         {#if !reload}
-        <VirtualList height="27.5em" items={list} let:item>
+          <VirtualList height="27.5em" items={list} let:item>
             {#if item?.id == undefined || item?.id == null}
               <p class="filter-type primary-text" class:first={list.indexOf(item) == 0}>{item}</p>
             {:else}

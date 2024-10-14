@@ -27,9 +27,6 @@
   import { addNotification } from "./stores/notificationStore.js";
 
   onMount(async () => {
-    setTimeout(async () => {
-      await appWindow.show();
-    }, 300);
     await checkIfClientIsRunning();
     await fetchOptions();
     await fetchDefaultUserOrError(false);

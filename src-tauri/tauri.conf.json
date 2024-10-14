@@ -114,7 +114,20 @@
         "fullscreen": false,
         "decorations": false,
         "center": true,
-        "visible": false
+        "visible": false,
+        "label": "main"
+      },
+      {
+        "title": "NoRiskClient - Updater",
+        "width": 380,
+        "height": 400,
+        "resizable": false,
+        "fullscreen": false,
+        "decorations": false,
+        "center": true,
+        "visible": false,
+        "url": "splashscreen.html",
+        "label": "splashscreen"
       }
     ]
   }

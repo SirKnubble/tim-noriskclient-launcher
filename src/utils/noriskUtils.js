@@ -9,7 +9,6 @@ import { profiles } from "../stores/profilesStore.js";
 export const noriskUser = writable(null);
 export const isInMaintenanceMode = writable(null);
 export const isClientRunning = writable(false);
-export const isCheckingForUpdates = writable(true);
 export const startProgress = writable({
   progressBarMax: 0,
   progressBarProgress: 0,

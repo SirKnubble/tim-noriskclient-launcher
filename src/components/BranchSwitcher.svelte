@@ -4,8 +4,6 @@
   import { quintOut } from "svelte/easing";
   import { branches, currentBranchIndex, switchBranch } from "../stores/branchesStore.js";
   import { scale } from "svelte/transition";
-  import { isCheckingForUpdates } from "../utils/noriskUtils.js";
-  import Updater from "./v2/Updater.svelte";
   import SignInOutput from "./home/widgets/SignInOutput.svelte";  
 </script>
 
@@ -16,14 +14,11 @@
         on:selectstart={preventSelection} style="cursor: pointer"
         on:mousedown={preventSelection} class="branch-font switch primary-text"
         on:click={() => switchBranch(true)}
-        style:opacity={($defaultUser == null || $isCheckingForUpdates)? 0 : 100}>
+        style:opacity={$defaultUser == null ? 0 : 100}>
       &lt;</h1>
   {/if}
   <section style="display: flex; justify-content: center; margin-bottom: 1em;">
-
-    {#if $isCheckingForUpdates}
-      <Updater />
-    {:else if !$defaultUser}
+    {#if !$defaultUser}
       <SignInOutput />
     {:else}
       {#if $branches.length > 0}
@@ -53,7 +48,7 @@
         on:selectstart={preventSelection}
         style="cursor: pointer" on:mousedown={preventSelection}
         class="branch-font primary-text switch" on:click={() => switchBranch(false)}
-        style:opacity={($defaultUser == null || $isCheckingForUpdates) ? 0 : 100}>
+        style:opacity={$defaultUser == null ? 0 : 100}>
       &gt;</h1>
   {/if}
 </div>
