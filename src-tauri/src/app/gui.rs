@@ -71,10 +71,10 @@ struct PlayerDBPlayer {
 
 #[tauri::command]
 async fn close_updater(window: Window) {
-    // Hide updater
+    // Close updater
     let updater = window.get_window("splashscreen");
     if updater.is_some() {
-        updater.unwrap().hide().unwrap();
+        updater.unwrap().close().unwrap();
     }
     
     // Show main window
@@ -101,7 +101,7 @@ async fn quit(window: Window) {
 }
 
 #[tauri::command]
-async fn has_internet_connection(window: Window) -> bool {
+async fn has_internet_connection() -> bool {
     reqwest::get("https://www.google.com").await.is_ok()
 }
 
