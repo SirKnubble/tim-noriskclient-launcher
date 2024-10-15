@@ -70,23 +70,38 @@ struct PlayerDBPlayer {
 }
 
 #[tauri::command]
-async fn close_splashscreen(window: Window) {
-    // Hide splashscreen
-    window.get_window("splashscreen").expect("no window labeled 'splashscreen' found").hide().unwrap();
+async fn close_updater(window: Window) {
+    // Hide updater
+    let updater = window.get_window("splashscreen");
+    if updater.is_some() {
+        updater.unwrap().hide().unwrap();
+    }
+    
     // Show main window
-    window.get_window("main").expect("no window labeled 'main' found").show().unwrap();
+    let main = window.get_window("main");
+    if main.is_some() {
+        main.clone().unwrap().show().unwrap();
+        main.unwrap().set_focus().unwrap();
+    }
 }
 
 #[tauri::command]
 async fn quit(window: Window) {
-    // Close splashscreen
-    window.get_window("splashscreen").expect("no window labeled 'splashscreen' found").close().unwrap();
+    // Close updater
+    let updater = window.get_window("updater");
+    if updater.is_some() {
+        updater.unwrap().close().unwrap();
+    }
+
     // Close main window
-    window.get_window("main").expect("no window labeled 'main' found").close().unwrap();
+    let main = window.get_window("main");
+    if main.is_some() {
+        main.unwrap().close().unwrap();
+    }
 }
 
 #[tauri::command]
-async fn has_internet_connection() -> bool {
+async fn has_internet_connection(window: Window) -> bool {
     reqwest::get("https://www.google.com").await.is_ok()
 }
 
@@ -1594,7 +1609,7 @@ pub fn gui_main() {
             runner_instance: Arc::new(Mutex::new(None)),
         })
         .invoke_handler(tauri::generate_handler![
-            close_splashscreen,
+            close_updater,
             quit,
             has_internet_connection,
             open_url,

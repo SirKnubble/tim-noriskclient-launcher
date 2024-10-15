@@ -59,10 +59,10 @@
         noriskLog(`No updates available`);
         text = "";
         if (error.trim() == "") {
-          await invoke("close_splashscreen").then(() => {
-            noriskLog(`Splashscreen closed -> Main window shown`);
+          await invoke("close_updater").then(() => {
+            noriskLog(`updater closed -> Main window shown`);
           }).catch(reason => {
-            noriskError(`Failed to close splashscreen / show main window: ${reason}`);
+            noriskError(`Failed to close updater / show main window: ${reason}`);
           });
         } else {
           appWindow.show();
@@ -97,7 +97,7 @@
 </script>
 
 
-<div class="container" class:dark-mode={$launcherOptions?.theme == "DARK"}>
+<div class="container" class:dark-mode={$launcherOptions?.theme == "DARK"} data-tauri-drag-region>
   <div class="content" on:selectstart={preventSelection} on:mousedown={preventSelection}>
     <img style={`opacity: ${text == null ? '0.3' : '1'};`} src={text != null ? Logo : OfflineLogo} alt="NoRiskClient Logo">
     {#if text == null}

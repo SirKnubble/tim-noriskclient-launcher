@@ -126,7 +126,8 @@
         "decorations": false,
         "center": true,
         "visible": false,
-        "url": "splashscreen.html",
+        "focus": true,
+        "url": "updater.html",
         "label": "splashscreen"
       }
     ]
