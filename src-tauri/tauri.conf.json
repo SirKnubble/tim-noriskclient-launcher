@@ -115,6 +115,7 @@
         "decorations": false,
         "center": true,
         "visible": false,
+        "focus": true,
         "label": "main"
       },
       {
