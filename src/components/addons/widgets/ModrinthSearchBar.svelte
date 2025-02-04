@@ -20,7 +20,6 @@
         last_change = now;
         setTimeout(() => {
             if (last_change === now) {
-                searchTerm = searchTerm.trim();
                 dispatch('search');
             }
         }, 200);

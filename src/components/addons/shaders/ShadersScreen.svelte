@@ -203,7 +203,7 @@
         index: search_index,
         limit: search_limit,
         offset: search_offset,
-        query: searchterm,
+        query: searchterm.trim(),
       },
     }).then((result) => {
       console.debug("Search Shader Result", result);
