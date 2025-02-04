@@ -22,7 +22,6 @@ use regex::Regex;
 use reqwest::multipart::{Form, Part};
 use serde::{Deserialize, Serialize};
 use sysinfo::{Pid, ProcessExt, System, SystemExt};
-use tauri::api::dialog::blocking::FileDialogBuilder;
 use tauri::{Manager, UserAttentionType, Window, WindowEvent};
 use tokio::{fs, io::AsyncReadExt};
 use uuid::Uuid;
@@ -1568,12 +1567,11 @@ async fn run_client(
     force_server: Option<String>,
     mods: Vec<LoaderMod>,
     window: Window,
-    app_state: tauri::State<'_, AppState>,
-    app: tauri::AppHandle,
+    app_state: tauri::State<'_, AppState>
 ) -> Result<Uuid, Error> {
     debug!("Starting Client with branch {}", branch);
     let runner_id = Uuid::new_v4(); // Erzeuge eine neue UUID für die Instanz
-    window.emit("open-start-progress", runner_id);
+    let _ = window.emit("open-start-progress", runner_id);
 
     fs::create_dir_all(&LAUNCHER_DIRECTORY.data_dir().join("nrc_cache")).await?;
 

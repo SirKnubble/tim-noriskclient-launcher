@@ -110,7 +110,7 @@ pub struct VersionProfile {
 }
 
 impl VersionProfile {
-    pub(crate) fn merge(&mut self, mut parent: VersionProfile) -> Result<()> {
+    pub(crate) fn merge(&mut self, parent: VersionProfile) -> Result<()> {
         Self::merge_options(&mut self.asset_index_location, parent.asset_index_location);
         Self::merge_options(&mut self.assets, parent.assets);
 

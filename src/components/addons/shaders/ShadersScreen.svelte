@@ -1,6 +1,5 @@
 <script>
   import { invoke } from "@tauri-apps/api";
-  import { removeFile } from "@tauri-apps/api/fs";
   import { open } from "@tauri-apps/api/dialog";
   import ModrinthSearchBar from "../widgets/ModrinthSearchBar.svelte";
   import ShaderItem from "./ShaderItem.svelte";
