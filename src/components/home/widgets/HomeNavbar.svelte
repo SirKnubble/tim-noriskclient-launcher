@@ -11,7 +11,7 @@
   import { openInputPopup } from "../../../utils/popupUtils.js";
   import { addNotification } from "../../../stores/notificationStore.js";
   import { translations } from '../../../utils/translationUtils.js';
-  import { fade, slide } from "svelte/transition";
+  import { slide } from "svelte/transition";
 
   /** @type {{ [key: string]: any }} */
   $: lang = $translations;
