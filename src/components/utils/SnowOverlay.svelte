@@ -4,7 +4,7 @@
 </script>
 
 <div class="main">
-    {#if !$launcherOptions.potatoMode}
+    {#if !$launcherOptions?.potatoMode}
         <div class="initial-snow">
             {#each snowFlakes as snowflake}
                 <div class="snow" class:paused={!$focusState}>{snowflake}</div>
