@@ -30,7 +30,7 @@
     let selectedMemory = 0;
 
     let keepLocalAssets = false;
-    let keepLocalAssetsPernmission = ["ADMIN", "DEVELOPER", "DESIGNER"].includes($noriskUser?.rank?.toUpperCase());
+    let keepLocalAssetsPermission = ["ADMIN", "DEVELOPER", "DESIGNER"].includes($noriskUser?.rank?.toUpperCase());
 
     function toggleTheme() {
       $launcherOptions.toggleTheme();
@@ -123,7 +123,7 @@
         noriskLog(`Total system memory: ${totalBytes} bytes (${totalSystemMemory} GB).`);
         noriskLog(`Selected memory: ${selectedMemory} GB.`);
 
-        if (keepLocalAssetsPernmission) {
+        if (keepLocalAssetsPermission) {
             await invoke("get_keep_local_assets").then((value) => {
               keepLocalAssets = value;
             }).catch((e) => {
@@ -153,7 +153,7 @@
     {#if $featureWhitelist.includes("EXPERIMENTAL_MODE") || $noriskUser?.isDev || $launcherOptions.experimentalMode == true}
         <ConfigRadioButton text={lang.settings.experimentalMode} bind:value={$launcherOptions.experimentalMode} isExclusive={$noriskUser?.isDev} isExclusiveLabel={"Dev"} on:toggle={toggleExperimentalMode} />
     {/if}
-    {#if keepLocalAssetsPernmission}
+    {#if keepLocalAssetsPermission}
         <ConfigRadioButton text={lang.settings.keepLocalAssets} bind:value={keepLocalAssets} isExclusive={true} isExclusiveLabel={"Designer"} on:toggle={toggleKeepLocalAssets}/>
     {/if}
     <ConfigRadioButton text={lang.settings.theme.replace("{theme}", $launcherOptions.theme)} bind:value={lightTheme} on:toggle={toggleTheme} />
