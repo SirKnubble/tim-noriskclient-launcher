@@ -82,7 +82,23 @@
         "decorations": false,
         "center": true,
         "visible": false,
-        "useHttpsScheme": true
+        "focus": true,
+        "useHttpsScheme": true,
+        "label": "main"
+      },
+      {
+        "title": "NoRiskClient - Updater",
+        "width": 380,
+        "height": 400,
+        "resizable": false,
+        "fullscreen": false,
+        "decorations": false,
+        "center": true,
+        "visible": false,
+        "focus": true,
+        "useHttpsScheme": true,
+        "url": "updater.html",
+        "label": "splashscreen"
       }
     ],
     "security": {

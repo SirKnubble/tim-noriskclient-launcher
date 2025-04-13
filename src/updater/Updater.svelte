@@ -1,15 +1,15 @@
 <script>
 	import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
   import { preventSelection } from "../utils/svelteUtils.js";
-  import { invoke } from '@tauri-apps/api/core';
+  import { invoke } from '@tauri-apps/api';
   import { onMount } from "svelte";
   import { fetchOptions, launcherOptions } from "../stores/optionsStore.js";
-  import { checkUpdate, installUpdate, onUpdaterEvent } from "@tauri-apps/plugin-updater";
-  import { relaunch } from "@tauri-apps/plugin-process";
-  import { noriskLog, noriskError } from "../utils/noriskUtils.js";
+  import { checkUpdate, installUpdate, onUpdaterEvent } from "@tauri-apps/api/updater";
+  import { relaunch } from "@tauri-apps/api/process";
+  import { noriskLog, noriskError, checkApiStatus } from "../utils/noriskUtils.js";
   import Logo from "../images/norisk_logo.png";
   import OfflineLogo from "../images/norisk_logo_dead.png";
-const appWindow = getCurrentWebviewWindow()
+  const appWindow = getCurrentWebviewWindow()
 
   let dots = "";
   let text = null;
@@ -23,8 +23,11 @@ const appWindow = getCurrentWebviewWindow()
     noriskLog("Checking internet connection");
     let hasConnection = false;
     await invoke("has_internet_connection").then(result => {
-      hasConnection = result;
+      hasConnection = result.online;
       noriskLog(`Internet connection: ${result}`);
+    }).catch(() => {
+      hasConnection = false;
+      noriskLog(`No internet connection`);
     })
     
     text = hasConnection ? "Checking for Updates" : null;
@@ -153,6 +156,7 @@ const appWindow = getCurrentWebviewWindow()
   }
 
   .branch-font {
+    font-family: 'Press Start 2P', serif;
     font-size: 14px;
     margin-top: 2em;
   }
@@ -163,6 +167,7 @@ const appWindow = getCurrentWebviewWindow()
   }
 
   .copy-error {
+    font-family: 'Press Start 2P', serif;
     font-size: 16px;
     text-shadow: none;
     margin-top: 1em;

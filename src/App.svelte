@@ -27,7 +27,7 @@
     import { invoke } from "@tauri-apps/api/core";
     import {addNotification} from "./stores/notificationStore.js";
     import {language, setLanguage, translations} from "./utils/translationUtils.js";
-const appWindow = getCurrentWebviewWindow()
+    const appWindow = getCurrentWebviewWindow()
 
     /** @type {{ [key: string]: any }} */
     $: lang = $translations;

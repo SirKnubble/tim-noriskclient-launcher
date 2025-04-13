@@ -132,10 +132,69 @@ struct PlayerDBPlayer {
 }
 
 #[tauri::command]
+async fn close_updater(window: Window) {
+    // Close updater
+    let updater = window.get_webview_window("splashscreen");
+    if updater.is_some() {
+        updater.unwrap().close().unwrap();
+    }
+    
+    // Show main window
+    let main = window.get_webview_window("main");
+    if main.is_some() {
+        main.clone().unwrap().show().unwrap();
+        main.unwrap().set_focus().unwrap();
+    }
+}
+
+#[tauri::command]
+async fn quit(window: Window) {
+    // Close updater
+    let updater = window.get_webview_window("splashscreen");
+    if updater.is_some() {
+        updater.unwrap().close().unwrap();
+    }
+
+    // Close main window
+    let main = window.get_webview_window("main");
+    if main.is_some() {
+        main.unwrap().close().unwrap();
+    }
+}
+
+#[tauri::command]
+async fn has_internet_connection() -> bool {
+    reqwest::get("https://www.google.com").await.is_ok()
+}
+
+#[tauri::command]
 async fn check_online_status() -> Result<OnlineStatusInfo, String> {
-    ApiEndpoints::norisk_api_status()
-        .await
-        .map_err(|e| format!("unable to check online status: {:?}", e))
+    ApiEndpoints::norisk_api_status().await.map_err(|e| format!("unable to check online status: {:?}", e))
+}
+
+#[tauri::command]
+async fn quit(window: Window) {
+    // Close updater
+    let updater = window.get_window("updater");
+    if updater.is_some() {
+        updater.unwrap().close().unwrap();
+    }
+
+    // Close main window
+    let main = window.get_window("main");
+    if main.is_some() {
+        main.unwrap().close().unwrap();
+    }
+}
+
+#[tauri::command]
+async fn has_internet_connection() -> bool {
+    reqwest::get("https://www.google.com").await.is_ok()
+}
+
+#[tauri::command]
+async fn check_online_status() -> Result<bool, String> {
+    ApiEndpoints::norisk_api_status().await.map_err(|e| format!("unable to check online status: {:?}", e))
 }
 
 #[tauri::command]
@@ -2402,7 +2461,10 @@ pub fn gui_main() {
     tauri::Builder::default()
         .on_window_event(|_, event| match event {
             WindowEvent::Destroyed => {
-                info!("Window destroyed, quitting application");
+                info!("Window '{}' destroyed", &event.window().label());
+                if event.window().label() == "main" {
+                    std::process::exit(0);
+                }
             }
             _ => {}
         })
@@ -2417,6 +2479,9 @@ pub fn gui_main() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            close_updater,
+            quit,
+            has_internet_connection,
             check_online_status,
             get_launcher_version,
             check_privacy_policy,
