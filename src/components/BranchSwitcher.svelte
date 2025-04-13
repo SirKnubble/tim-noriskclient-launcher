@@ -7,8 +7,6 @@
   import { quintOut } from "svelte/easing";
   import { branches, branchSubtitles, currentBranchIndex, switchBranch } from "../stores/branchesStore.js";
   import { scale } from "svelte/transition";
-  import { isCheckingForUpdates } from "../utils/noriskUtils.js";
-  import Updater from "./v2/Updater.svelte";
   import SignInOutput from "./home/widgets/SignInOutput.svelte";
   import { translations } from '../utils/translationUtils.js';
     

@@ -132,9 +132,9 @@ struct PlayerDBPlayer {
 }
 
 #[tauri::command]
-async fn close_updater(window: Window) {
+async fn close_updater(window: WebviewWindow) {
     // Close updater
-    let updater = window.get_webview_window("splashscreen");
+    let updater = window.get_webview_window("updater");
     if updater.is_some() {
         updater.unwrap().close().unwrap();
     }
@@ -148,9 +148,9 @@ async fn close_updater(window: Window) {
 }
 
 #[tauri::command]
-async fn quit(window: Window) {
+async fn quit(window: WebviewWindow) {
     // Close updater
-    let updater = window.get_webview_window("splashscreen");
+    let updater = window.get_webview_window("updater");
     if updater.is_some() {
         updater.unwrap().close().unwrap();
     }
@@ -169,31 +169,6 @@ async fn has_internet_connection() -> bool {
 
 #[tauri::command]
 async fn check_online_status() -> Result<OnlineStatusInfo, String> {
-    ApiEndpoints::norisk_api_status().await.map_err(|e| format!("unable to check online status: {:?}", e))
-}
-
-#[tauri::command]
-async fn quit(window: Window) {
-    // Close updater
-    let updater = window.get_window("updater");
-    if updater.is_some() {
-        updater.unwrap().close().unwrap();
-    }
-
-    // Close main window
-    let main = window.get_window("main");
-    if main.is_some() {
-        main.unwrap().close().unwrap();
-    }
-}
-
-#[tauri::command]
-async fn has_internet_connection() -> bool {
-    reqwest::get("https://www.google.com").await.is_ok()
-}
-
-#[tauri::command]
-async fn check_online_status() -> Result<bool, String> {
     ApiEndpoints::norisk_api_status().await.map_err(|e| format!("unable to check online status: {:?}", e))
 }
 
@@ -2459,10 +2434,10 @@ async fn check_feature_whitelist(
 /// Runs the GUI and returns when the window is closed.
 pub fn gui_main() {
     tauri::Builder::default()
-        .on_window_event(|_, event| match event {
+        .on_window_event(|window, event| match event {
             WindowEvent::Destroyed => {
-                info!("Window '{}' destroyed", &event.window().label());
-                if event.window().label() == "main" {
+                info!("Window '{}' destroyed", &window.label());
+                if window.label() == "main" {
                     std::process::exit(0);
                 }
             }

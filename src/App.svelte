@@ -36,9 +36,6 @@
         window.addEventListener("focus", () => setFocusState(true));
         window.addEventListener("blur", () => setFocusState(false));
 
-        setTimeout(async () => {
-            await appWindow.show();
-        }, 300);
         await getVersion();
         await fetchOptions();
         await checkApiStatus();

@@ -16,7 +16,6 @@ export const isInMaintenanceMode = writable(false);
 export const onlinePlayers = writable(null);
 export const isApiOnline = writable(true);
 export const isClientRunning = writable([false, false]);
-export const isCheckingForUpdates = writable(true);
 export const clientInstances = writable([]);
 export const featureWhitelist = writable([]);
 export const customServerProgress = writable({});

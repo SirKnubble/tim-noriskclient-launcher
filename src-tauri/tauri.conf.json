@@ -98,7 +98,7 @@
         "focus": true,
         "useHttpsScheme": true,
         "url": "updater.html",
-        "label": "splashscreen"
+        "label": "updater"
       }
     ],
     "security": {

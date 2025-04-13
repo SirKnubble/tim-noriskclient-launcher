@@ -1,4 +1,4 @@
-import "../app.css";
+import "../global.css";
 import Updater from "./Updater.svelte";
 
 const updater = new Updater({

@@ -1,11 +1,11 @@
 <script>
+	import { relaunch } from '@tauri-apps/plugin-process';
 	import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
   import { preventSelection } from "../utils/svelteUtils.js";
-  import { invoke } from '@tauri-apps/api';
+  import { invoke } from '@tauri-apps/api/core';
   import { onMount } from "svelte";
   import { fetchOptions, launcherOptions } from "../stores/optionsStore.js";
-  import { checkUpdate, installUpdate, onUpdaterEvent } from "@tauri-apps/api/updater";
-  import { relaunch } from "@tauri-apps/api/process";
+  import { check } from "@tauri-apps/plugin-updater";
   import { noriskLog, noriskError, checkApiStatus } from "../utils/noriskUtils.js";
   import Logo from "../images/norisk_logo.png";
   import OfflineLogo from "../images/norisk_logo_dead.png";
@@ -15,6 +15,7 @@
   let text = null;
   let error = "";
   let copyErrorButton = "Copy Error";
+  
 
   onMount(async () => {
     let interval = animateLoadingText();
@@ -23,7 +24,7 @@
     noriskLog("Checking internet connection");
     let hasConnection = false;
     await invoke("has_internet_connection").then(result => {
-      hasConnection = result.online;
+      hasConnection = result;
       noriskLog(`Internet connection: ${result}`);
     }).catch(() => {
       hasConnection = false;
@@ -33,24 +34,19 @@
     text = hasConnection ? "Checking for Updates" : null;
     if (!text) return appWindow.show();
 
-    const unlisten = await onUpdaterEvent(({ error, status }) => {
-      // This will log all updater events, including status updates and errors.
-      noriskLog(`Updater event -> Err: ${error} Status: ${status}`);
-      error = error;
-    });
-
     try {
-      const { shouldUpdate, manifest } = await checkUpdate();
+      const update = await check();
 
-      if (shouldUpdate) {
+      if (update != null) {
         appWindow.show();
-        noriskLog(`Installing update: ${manifest?.version} ${manifest?.body}`);
+        noriskLog(`Installing update: ${update.rawJson}`);
         text = "Installing Update";
 
+        return;
         // Install the update. This will also restart the app on Windows!
-        await installUpdate().catch(reason => {
-          noriskError(reason);
-        });
+        // await installUpdate().catch(reason => {
+        //   noriskError(reason);
+        // });
         noriskLog(`Update was installed`);
         text = "Restarting";
 
@@ -100,8 +96,8 @@
   }
 </script>
 
-
-<div class="container" class:dark-mode={$launcherOptions?.theme == "DARK"} data-tauri-drag-region>
+<div class="drag-overlay" data-tauri-drag-region />
+<div class="container" class:dark-mode={$launcherOptions?.theme == "DARK"}>
   <div class="content" on:selectstart={preventSelection} on:mousedown={preventSelection}>
     <img style={`opacity: ${text == null ? '0.3' : '1'};`} src={text != null ? Logo : OfflineLogo} alt="NoRiskClient Logo">
     {#if text == null}
@@ -130,6 +126,14 @@
     align-items: center;
     flex-direction: column;
     cursor: default;
+  }
+
+  .drag-overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 100;
+    background-color: transparent;
   }
 
   .content {
@@ -173,6 +177,7 @@
     margin-top: 1em;
     text-align: center;
     transition-duration: 200ms;
+    z-index: 101;
     cursor: pointer;
   }
 
