@@ -9,6 +9,7 @@
   import { noriskLog, noriskError, checkApiStatus } from "../utils/noriskUtils.js";
   import Logo from "../images/norisk_logo.png";
   import OfflineLogo from "../images/norisk_logo_dead.png";
+  const appWindow = getCurrentWebviewWindow()
 
   let dots = "";
   let text = null;
@@ -22,8 +23,11 @@
     noriskLog("Checking internet connection");
     let hasConnection = false;
     await invoke("has_internet_connection").then(result => {
-      hasConnection = result;
+      hasConnection = result.online;
       noriskLog(`Internet connection: ${result}`);
+    }).catch(() => {
+      hasConnection = false;
+      noriskLog(`No internet connection`);
     })
     
     text = hasConnection ? "Checking for Updates" : null;

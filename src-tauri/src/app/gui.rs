@@ -72,17 +72,42 @@ struct PlayerDBPlayer {
 #[tauri::command]
 async fn close_updater(window: Window) {
     // Close updater
-    let updater = window.get_window("splashscreen");
+    let updater = window.get_webview_window("splashscreen");
     if updater.is_some() {
         updater.unwrap().close().unwrap();
     }
     
     // Show main window
-    let main = window.get_window("main");
+    let main = window.get_webview_window("main");
     if main.is_some() {
         main.clone().unwrap().show().unwrap();
         main.unwrap().set_focus().unwrap();
     }
+}
+
+#[tauri::command]
+async fn quit(window: Window) {
+    // Close updater
+    let updater = window.get_webview_window("splashscreen");
+    if updater.is_some() {
+        updater.unwrap().close().unwrap();
+    }
+
+    // Close main window
+    let main = window.get_webview_window("main");
+    if main.is_some() {
+        main.unwrap().close().unwrap();
+    }
+}
+
+#[tauri::command]
+async fn has_internet_connection() -> bool {
+    reqwest::get("https://www.google.com").await.is_ok()
+}
+
+#[tauri::command]
+async fn check_online_status() -> Result<OnlineStatusInfo, String> {
+    ApiEndpoints::norisk_api_status().await.map_err(|e| format!("unable to check online status: {:?}", e))
 }
 
 #[tauri::command]
@@ -1612,7 +1637,6 @@ pub fn gui_main() {
             close_updater,
             quit,
             has_internet_connection,
-            open_url,
             check_online_status,
             get_options,
             open_minecraft_logs_window,
