@@ -1,14 +1,15 @@
 <script>
-	import { appWindow } from '@tauri-apps/api/window';
+	import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
   import { preventSelection } from "../utils/svelteUtils.js";
-  import { invoke } from '@tauri-apps/api';
+  import { invoke } from '@tauri-apps/api/core';
   import { onMount } from "svelte";
   import { fetchOptions, launcherOptions } from "../stores/optionsStore.js";
-  import { checkUpdate, installUpdate, onUpdaterEvent } from "@tauri-apps/api/updater";
-  import { relaunch } from "@tauri-apps/api/process";
+  import { checkUpdate, installUpdate, onUpdaterEvent } from "@tauri-apps/plugin-updater";
+  import { relaunch } from "@tauri-apps/plugin-process";
   import { noriskLog, noriskError } from "../utils/noriskUtils.js";
   import Logo from "../images/norisk_logo.png";
   import OfflineLogo from "../images/norisk_logo_dead.png";
+const appWindow = getCurrentWebviewWindow()
 
   let dots = "";
   let text = null;

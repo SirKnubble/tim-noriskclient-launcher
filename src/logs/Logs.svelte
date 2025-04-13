@@ -3,12 +3,13 @@
   import VirtualList from "../components/utils/VirtualList.svelte";
   import LogMessage from "./LogMessage.svelte";
   import { onMount } from "svelte";
-  import { appWindow } from "@tauri-apps/api/window";
-  import { invoke } from "@tauri-apps/api";
+  import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+  import { invoke } from "@tauri-apps/api/core";
   import { addNotification } from "../stores/notificationStore.js";
   import { fetchOptions, launcherOptions } from "../stores/optionsStore.js";
   import { language, setLanguage, translations } from "../utils/translationUtils.js";
   import { location } from "svelte-spa-router";
+const appWindow = getCurrentWebviewWindow()
 
   /** @type {{ [key: string]: any }} */
   $: lang = $translations;

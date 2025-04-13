@@ -1,10 +1,10 @@
 <script>
-  import { invoke } from "@tauri-apps/api";
-  import { open } from "@tauri-apps/api/dialog";
+  import { invoke } from "@tauri-apps/api/core";
+  import { open } from "@tauri-apps/plugin-dialog";
   import ModrinthSearchBar from "../widgets/ModrinthSearchBar.svelte";
   import ShaderItem from "./ShaderItem.svelte";
   import { tick, onDestroy, onMount } from "svelte";
-  import { watch } from "tauri-plugin-fs-watch-api";
+  import { watch } from "@tauri-apps/plugin-fs";
   import { listen } from "@tauri-apps/api/event";
   import { branches, currentBranchIndex } from "../../../stores/branchesStore.js";
   import { launcherOptions } from "../../../stores/optionsStore.js";
@@ -56,7 +56,7 @@
 
   // check if an element exists in array using a comparer function
   // comparer : function(currentElement)
-  Array.prototype.inArray = function(comparer) {
+  Array.prototype.includes = function(comparer) {
     for (let i = 0; i < this.length; i++) {
       if (comparer(this[i])) return true;
     }
@@ -66,7 +66,7 @@
   // adds an element to the array if it does not already exist using a comparer
   // function
   Array.prototype.pushIfNotExist = function(element, comparer) {
-    if (!this.inArray(comparer)) {
+    if (!this.includes(comparer)) {
       this.push(element);
     }
   };

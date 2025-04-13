@@ -59,9 +59,10 @@ const TRIGGER_FILE_SIZE: u64 = 2 * 1024 * 1000;
 /// Number of archive log files to keep
 const LOG_FILE_COUNT: u32 = 10;
 
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn main() -> anyhow::Result<()> {
     // Path fix
-    let _ = fix_path_env::fix();
+    // let _ = fix_path_env::fix();
 
     let log_folder = LAUNCHER_DIRECTORY.data_dir().join("logs");
     let latest_log = log_folder.join("latest.log");

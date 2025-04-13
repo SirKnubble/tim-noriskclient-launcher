@@ -22,7 +22,9 @@ use regex::Regex;
 use reqwest::multipart::{Form, Part};
 use serde::{Deserialize, Serialize};
 use sysinfo::{Pid, ProcessExt, System, SystemExt};
-use tauri::{Manager, UserAttentionType, Window, WindowEvent};
+use tauri::Manager;
+use tauri::WebviewWindow;
+use tauri::{UserAttentionType, Window, WindowEvent, WebviewWindowBuilder, Emitter, WebviewUrl};
 use tokio::{fs, io::AsyncReadExt};
 use uuid::Uuid;
 
@@ -347,7 +349,7 @@ async fn download_shader(
     options: LauncherOptions,
     branch: &str,
     shader: Shader,
-    window: Window,
+    window: WebviewWindow,
 ) -> Result<(), Error> {
     ShaderManager::download_shader(options, branch, &shader, window).await
 }
@@ -374,7 +376,7 @@ async fn download_resourcepack(
     options: LauncherOptions,
     branch: &str,
     resourcepack: ResourcePack,
-    window: Window,
+    window: WebviewWindow,
 ) -> Result<(), Error> {
     ResourcePackManager::download_resourcepack(options, branch, &resourcepack, window).await
 }
@@ -406,7 +408,7 @@ async fn download_datapack(
     branch: &str,
     world: &str,
     datapack: Datapack,
-    window: Window,
+    window: WebviewWindow,
 ) -> Result<(), Error> {
     DataPackManager::download_datapack(options, branch, world, &datapack, window).await
 }
@@ -557,10 +559,10 @@ pub async fn open_minecraft_logs_window(
     let unique_label = format!("logs-{}:{}:{}", random_number, uuid, is_live);
 
     // Baue das Fenster
-    let window = tauri::WindowBuilder::new(
+    let window = WebviewWindowBuilder::new(
         &handle,
         unique_label,
-        tauri::WindowUrl::App("logs.html".into()),
+        WebviewUrl::App("logs.html".into()),
     )
     .inner_size(1000.0, 800.0)
     .build()?;
@@ -583,10 +585,10 @@ pub async fn open_minecraft_crash_window(
     // Create a unique label using the random number
     let unique_label = format!("crash-{}", random_number);
     // Create the new window
-    let window = tauri::WindowBuilder::new(
+    let window = tauri::WebviewWindowBuilder::new(
         &handle,
         unique_label,
-        tauri::WindowUrl::App("crash.html".into()),
+        WebviewUrl::App("crash.html".into()),
     )
     .build()?;
 
@@ -1184,16 +1186,16 @@ async fn discord_auth_link(
         token
     );
 
-    if let Some(window) = app.get_window("discord-signin") {
+    if let Some(window) = app.get_webview_window("discord-signin") {
         window.close()?;
     }
 
     let start = Utc::now();
 
-    let window = tauri::WindowBuilder::new(
+    let window = WebviewWindowBuilder::new(
         &app,
         "discord-signin",
-        tauri::WindowUrl::External(url.parse().unwrap()),
+        WebviewUrl::External(url.parse().unwrap()),
     )
     .title("Discord X NoRiskClient")
     .always_on_top(true)
@@ -1211,8 +1213,12 @@ async fn discord_auth_link(
 
         if window
             .url()
-            .as_str()
-            .starts_with("https://api.norisk.gg/api/v1/core/oauth/discord/complete")
+            .is_ok()
+            && window
+                .url()
+                .unwrap()
+                .as_str()
+                .starts_with("https://api.norisk.gg/api/v1/core/oauth/discord/complete")
         {
             tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
             window.close()?;
@@ -1265,14 +1271,14 @@ async fn microsoft_auth(app: tauri::AppHandle) -> Result<Option<Credentials>, Er
 
     let start = Utc::now();
 
-    if let Some(window) = app.get_window("signin") {
+    if let Some(window) = app.get_webview_window("signin") {
         window.close()?;
     }
 
-    let window = tauri::WindowBuilder::new(
+    let window = WebviewWindowBuilder::new(
         &app,
         "signin",
-        tauri::WindowUrl::External(flow.redirect_uri.parse().map_err(|_| {
+        WebviewUrl::External(flow.redirect_uri.parse().map_err(|_| {
             ErrorKind::OtherError("Error parsing auth redirect URL".to_string()).as_error()
         })?),
     )
@@ -1286,7 +1292,7 @@ async fn microsoft_auth(app: tauri::AppHandle) -> Result<Option<Credentials>, Er
     let app_clone = app.clone();
     window.on_window_event(move |event| {
         if let WindowEvent::CloseRequested { .. } = event {
-            app_clone.get_window("main")
+            app_clone.get_webview_window("main")
                 .unwrap().emit("microsoft-output", "signIn.step.cancelled")
                 .unwrap_or_default();
             return;
@@ -1301,16 +1307,20 @@ async fn microsoft_auth(app: tauri::AppHandle) -> Result<Option<Credentials>, Er
 
         if window
             .url()
-            .as_str()
-            .starts_with("https://login.live.com/oauth20_desktop.srf")
+            .is_ok()
+            && window
+                .url()
+                .unwrap()
+                .as_str()
+                .starts_with("https://login.live.com/oauth20_desktop.srf")
         {
-            if let Some((_, code)) = window.url().query_pairs().find(|x| x.0 == "code") {
+            if let Some((_, code)) = window.url().unwrap().query_pairs().find(|x| x.0 == "code") {
                 window.close()?;
                 let credentials = accounts
-                    .login_finish(&code.clone(), flow, app.get_window("main").unwrap())
+                    .login_finish(&code.clone(), flow, app.get_webview_window("main").unwrap())
                     .await?;
 
-                app.get_window("main")
+                app.get_webview_window("main")
                     .unwrap()
                     .emit("microsoft-output", "signIn.step.noriskToken")
                     .unwrap_or_default();
@@ -1328,7 +1338,7 @@ async fn microsoft_auth(app: tauri::AppHandle) -> Result<Option<Credentials>, Er
                             "After Microsoft Auth: Error Fetching NoRiskClient Token {:?}",
                             err
                         );
-                        app.get_window("main")
+                        app.get_webview_window("main")
                             .unwrap()
                             .emit("microsoft-output", "signIn.step.notWhitelisted")
                             .unwrap_or_default();
@@ -2013,7 +2023,7 @@ async fn run_custom_server(
 }
 
 #[tauri::command]
-async fn check_if_custom_server_running(window: Window) -> Result<(bool, String), String> {
+async fn check_if_custom_server_running(window: WebviewWindow) -> Result<(bool, String), String> {
     let window_mutex = Arc::new(std::sync::Mutex::new(window));
 
     let latest_running_server = CustomServerManager::load_latest_running_server()
@@ -2390,13 +2400,18 @@ async fn check_feature_whitelist(
 /// Runs the GUI and returns when the window is closed.
 pub fn gui_main() {
     tauri::Builder::default()
-        .on_window_event(move |event| match event.event() {
+        .on_window_event(|_, event| match event {
             WindowEvent::Destroyed => {
                 info!("Window destroyed, quitting application");
             }
             _ => {}
         })
-        .plugin(tauri_plugin_fs_watch::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_shell::init())
         .setup(|app| {
             NRCCache::initialize_app_state(app);
             Ok(())

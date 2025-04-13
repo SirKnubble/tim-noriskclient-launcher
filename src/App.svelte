@@ -1,6 +1,6 @@
 <script>
 	import { setFocusState } from './stores/performanceStore.js';
-	import { relaunch } from '@tauri-apps/api/process';
+	import { relaunch } from '@tauri-apps/plugin-process';
     import Router from "./Router.svelte";
     import {onMount} from "svelte";
     import {defaultUser, fetchDefaultUserOrError} from "./stores/credentialsStore.js";
@@ -23,10 +23,11 @@
     import {launcherOptions} from "./stores/optionsStore.js";
     import {profiles} from "./stores/profilesStore.js";
     import {getAnnouncements, getChangeLogs, getLastViewedPopups} from "./utils/popupUtils.js";
-    import {appWindow} from "@tauri-apps/api/window";
-    import {invoke} from "@tauri-apps/api";
+    import {getCurrentWebviewWindow} from "@tauri-apps/api/webviewWindow";
+    import { invoke } from "@tauri-apps/api/core";
     import {addNotification} from "./stores/notificationStore.js";
     import {language, setLanguage, translations} from "./utils/translationUtils.js";
+const appWindow = getCurrentWebviewWindow()
 
     /** @type {{ [key: string]: any }} */
     $: lang = $translations;

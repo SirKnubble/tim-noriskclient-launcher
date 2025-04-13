@@ -21,15 +21,16 @@
 
 <CreditModal bind:showModal={showCreditsModal} />
 <div class="home-wrapper">
-  <HomeLeftNavbar />
-  <HomeNavbar />
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- DO NOT REMOVE THIS! Contact Tim if you have any questions! -->
-  <div class="credits-click-field" on:click={showCredits}></div>
-  <img class="pokemon-title" class:title-effect={!$launcherOptions.potatoMode} class:paused={!$focusState} src={isWinterSeason ? NoRiskLogoColorSnow : NoRiskLogoColor} alt="Pokemon Title">
-  <BranchSwitcher />
-  <SkinButton />
-  <CopyrightLabel />
+    <HomeLeftNavbar />
+    <HomeNavbar />
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+    <!-- DO NOT REMOVE THIS! Contact Tim if you have any questions! -->
+    <div class="credits-click-field" on:click={showCredits}></div>
+    <img class="pokemon-title" class:title-effect={!$launcherOptions.potatoMode} class:paused={!$focusState} src={isWinterSeason ? NoRiskLogoColorSnow : NoRiskLogoColor} alt="Pokemon Title">
+    <BranchSwitcher />
+    <SkinButton />
+    <CopyrightLabel />
 </div>
 
 <style>
@@ -39,9 +40,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-content: center;
     align-items: center;
-    gap: 1.2em;
+    gap: 1.2em; 
   }
 
   .credits-click-field {
