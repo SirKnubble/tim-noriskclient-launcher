@@ -13,78 +13,35 @@
   import CreditModal from "./widgets/CreditsModal.svelte";
 
   let showCreditsModal = false;
-  let navigationTabOpen = false;
 
   function showCredits() {
     showCreditsModal = true;
-  }
-
-  function toggleNavigation() {
-    if (navigationTabOpen) {
-      document.getElementById("top").scrollIntoView({ behavior: "smooth" });
-    } else {
-      document.getElementById("bottom").scrollIntoView({ behavior: "smooth" });
-    }
-
-    setTimeout(() => {
-      navigationTabOpen = !navigationTabOpen;
-    }, 325);
   }
 </script>
 
 <CreditModal bind:showModal={showCreditsModal} />
 <div class="home-wrapper">
-  {#if navigationTabOpen}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-    <h1 class="close-navigation-btn" on:mouseover={toggleNavigation} on:click={toggleNavigation}>&ShortUpArrow; Home &ShortUpArrow;</h1>
-  {/if}
-  <section id="top">
     <!-- <HomeLeftNavbar /> -->
     <HomeNavbar />
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
     <!-- DO NOT REMOVE THIS! Contact Tim if you have any questions! -->
-    <div class="credits-click-field" on:mouseover={toggleNavigation} on:click={showCredits}></div>
+    <div class="credits-click-field" on:click={showCredits}></div>
     <img class="pokemon-title" class:title-effect={!$launcherOptions.potatoMode} class:paused={!$focusState} src={isWinterSeason ? NoRiskLogoColorSnow : NoRiskLogoColor} alt="Pokemon Title">
     <BranchSwitcher />
     <SkinButton />
     <CopyrightLabel />
-  </section>
-  <section id="bottom">
-    <div class="grid">
-
-    </div>
-  </section>
 </div>
 
 <style>
   .home-wrapper {
     width: 100%;
-    height: 200%;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    gap: 1.2em; 
-  }
-
-  section {
-    position: relative;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 1.2em;
-    width: 100%;
-    height: 80vh;
-  }
-
-  .close-navigation-btn {
-    position: absolute;
-    top: -6vh;
-    font-size: 1.35em;
-    cursor: pointer;
+    gap: 1.2em; 
   }
 
   .credits-click-field {
