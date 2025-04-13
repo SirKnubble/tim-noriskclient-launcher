@@ -1,7 +1,7 @@
 <script>
 	import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
   import { preventSelection } from "../utils/svelteUtils.js";
-  import { invoke } from '@tauri-apps/api';
+  import { invoke } from '@tauri-apps/api/core';
   import { onMount } from "svelte";
   import { fetchOptions, launcherOptions } from "../stores/optionsStore.js";
   import { checkUpdate, installUpdate, onUpdaterEvent } from "@tauri-apps/plugin-updater";

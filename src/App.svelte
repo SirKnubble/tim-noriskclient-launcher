@@ -24,7 +24,7 @@
     import {profiles} from "./stores/profilesStore.js";
     import {getAnnouncements, getChangeLogs, getLastViewedPopups} from "./utils/popupUtils.js";
     import {getCurrentWebviewWindow} from "@tauri-apps/api/webviewWindow";
-    import {invoke} from "@tauri-apps/api";
+    import { invoke } from "@tauri-apps/api/core";
     import {addNotification} from "./stores/notificationStore.js";
     import {language, setLanguage, translations} from "./utils/translationUtils.js";
 const appWindow = getCurrentWebviewWindow()
