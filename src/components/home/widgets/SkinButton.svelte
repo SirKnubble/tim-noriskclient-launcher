@@ -6,7 +6,7 @@
   import { runClient } from "../../../utils/noriskUtils.js";
   import { branches, currentBranchIndex } from "../../../stores/branchesStore.js";
   import { onMount } from "svelte";
-  import { invoke } from "@tauri-apps/api";
+  import { invoke } from "@tauri-apps/api/core";
 
   let canStart = true;
   let fallBackUser;

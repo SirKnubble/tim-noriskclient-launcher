@@ -2407,6 +2407,7 @@ pub fn gui_main() {
             _ => {}
         })
         .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
             NRCCache::initialize_app_state(app);
             Ok(())
