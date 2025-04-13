@@ -1,6 +1,6 @@
 <script>
 	import CapePlayer from './CapePlayer.svelte';
-  import { invoke } from "@tauri-apps/api/tauri";
+  import { invoke } from "@tauri-apps/api/core";
   import { createEventDispatcher } from "svelte";
   import CapeCarousel from "./CapeCarousel.svelte";
   import CapeEditor from "./CapeEditor.svelte";
@@ -172,6 +172,7 @@
       <div class="button-wrapper">
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <h1 class="red-text-clickable" on:click={()=>switchTab(0)}>{lang.popup.defaultButtons.cancel}</h1>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
         <h1 on:click={handleUploadCape}>{lang.popup.defaultButtons.confirm}</h1>
       </div>
       {/if}

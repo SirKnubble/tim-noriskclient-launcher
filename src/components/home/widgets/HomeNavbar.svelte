@@ -4,7 +4,7 @@
   import { get } from "svelte/store";
   import AccountModal from "../../account/AccountModal.svelte";
   import { push } from "svelte-spa-router";
-  import { appWindow } from "@tauri-apps/api/window";
+  import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
   import { onMount } from "svelte";
   import { invoke } from "@tauri-apps/api";
   import { getNoRiskToken, noriskLog, getFeatureWhitelist, featureWhitelist, getNoRiskUser } from "../../../utils/noriskUtils.js";
@@ -12,6 +12,7 @@
   import { addNotification } from "../../../stores/notificationStore.js";
   import { translations } from '../../../utils/translationUtils.js';
   import { slide } from "svelte/transition";
+const appWindow = getCurrentWebviewWindow()
 
   /** @type {{ [key: string]: any }} */
   $: lang = $translations;

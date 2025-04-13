@@ -2,8 +2,8 @@
   import { quintOut } from "svelte/easing";
   import { scale } from "svelte/transition";
   import { onMount } from "svelte";
-  import { checkUpdate, installUpdate, onUpdaterEvent } from "@tauri-apps/api/updater";
-  import { relaunch } from "@tauri-apps/api/process";
+  import { checkUpdate, installUpdate, onUpdaterEvent } from "@tauri-apps/plugin-updater";
+  import { relaunch } from "@tauri-apps/plugin-process";
   import { isApiOnline, isCheckingForUpdates, noriskLog, noriskError } from "../../utils/noriskUtils.js";
   import { addNotification } from "../../stores/notificationStore.js";
   import { delay } from "../../utils/svelteUtils.js";

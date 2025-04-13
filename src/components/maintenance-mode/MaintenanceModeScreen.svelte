@@ -1,9 +1,10 @@
 <script>
-    import { open } from '@tauri-apps/api/shell';
-    import { appWindow } from "@tauri-apps/api/window";
+    import { open } from '@tauri-apps/plugin-shell';
+    import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
     import { openInputPopup } from "../../utils/popupUtils.js";
     import { setMaintenanceMode } from "../../utils/noriskUtils.js";
     import { translations } from './../../utils/translationUtils.js';
+const appWindow = getCurrentWebviewWindow()
 
     /** @type {{ [key: string]: any }} */
     $: lang = $translations;
